@@ -4,16 +4,19 @@ defmodule BastesBot.Application do
   @moduledoc false
 
   use Application
+  alias Alchemy.Client
+
+  defp load_modules() do
+    use BastesBot.Commands
+  end
 
   @impl true
   def start(_type, _args) do
-    children = [
-      # Starts a worker by calling: BastesBot.Worker.start_link(arg)
-      # {BastesBot.Worker, arg}
-    ]
+    children = []
 
-    # See https://hexdocs.pm/elixir/Supervisor.html
-    # for other strategies and supported options
+    Client.start(Application.get_env(:bastes_bot, :token))
+    load_modules()
+
     opts = [strategy: :one_for_one, name: BastesBot.Supervisor]
     Supervisor.start_link(children, opts)
   end
