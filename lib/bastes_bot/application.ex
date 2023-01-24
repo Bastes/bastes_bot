@@ -15,6 +15,7 @@ defmodule BastesBot.Application do
     children = []
 
     Client.start(Application.get_env(:bastes_bot, :token))
+    Alchemy.Cogs.set_prefix("/")
     load_modules()
 
     opts = [strategy: :one_for_one, name: BastesBot.Supervisor]
