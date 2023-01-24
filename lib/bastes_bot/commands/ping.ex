@@ -16,8 +16,6 @@ defmodule BastesBot.Commands.Ping do
 
   @impl Command
   def handle_interaction(interaction) do
-    IO.inspect(interaction, label: "interaction")
-
     Api.create_interaction_response(interaction, %{
       type: 4,
       data: %{content: "Pong!"}

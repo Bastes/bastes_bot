@@ -4,7 +4,9 @@ if Config.config_env() == :dev do
   DotenvParser.load_file(".env")
 end
 
-config :nostrum, token: System.get_env("BOT_TOKEN")
+config :nostrum,
+  token: System.get_env("BOT_TOKEN"),
+  gateway_intents: [:message_content]
 
 config :bastes_bot,
   env: Config.config_env(),
