@@ -8,7 +8,7 @@ defmodule BastesBot.Commands do
   # here and ensure they don't collide.
   @commands %{
     "ping" => BastesBot.Commands.Ping,
-    "greet" => BastesBot.Commands.Greet
+    "roll" => BastesBot.Commands.Roll
   }
 
   @command_names for {name, _} <- @commands, do: name
@@ -20,6 +20,7 @@ defmodule BastesBot.Commands do
     # so we use a test guild when in dev mode.
     if Application.get_env(:bastes_bot, :env) == :dev do
       guild_id = Application.get_env(:bastes_bot, :dev_guild_id)
+
       Nostrum.Api.bulk_overwrite_guild_application_commands(guild_id, commands)
     else
       Nostrum.Api.bulk_overwrite_global_application_commands(commands)
