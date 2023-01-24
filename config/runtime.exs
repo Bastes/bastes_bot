@@ -6,7 +6,7 @@ end
 
 config :nostrum,
   token: System.get_env("BOT_TOKEN"),
-  gateway_intents: [:message_content]
+  gateway_intents: :all
 
 config :bastes_bot,
   env: Config.config_env(),
