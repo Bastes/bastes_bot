@@ -4,19 +4,12 @@ defmodule BastesBot.Application do
   @moduledoc false
 
   use Application
-  alias Alchemy.Client
-
-  defp load_modules() do
-    use BastesBot.Commands
-  end
 
   @impl true
   def start(_type, _args) do
-    children = []
-
-    Client.start(Application.get_env(:bastes_bot, :token))
-    Alchemy.Cogs.set_prefix("/")
-    load_modules()
+    children = [
+      {BastesBot.Consumer.Supervisor, []}
+    ]
 
     opts = [strategy: :one_for_one, name: BastesBot.Supervisor]
     Supervisor.start_link(children, opts)

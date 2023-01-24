@@ -1,21 +1,36 @@
 defmodule BastesBot.Commands do
-  use Alchemy.Cogs
+  @doc """
+  Handling and routing for commands and interactions.
+  """
 
-  Cogs.set_parser(:ping, fn message ->
-    IO.inspect(message)
-    List.wrap(message)
-  end)
+  # Add your commands here. The command name will be passed as an argument to
+  # your command's `spec/1` function, so you can see all of the command names
+  # here and ensure they don't collide.
+  @commands %{
+    "ping" => BastesBot.Commands.Ping,
+    "greet" => BastesBot.Commands.Greet
+  }
 
-  Cogs.def ping do
-    IO.puts("ping received")
-    IO.inspect(message, label: "message")
-    Cogs.say("Pong!!!")
+  @command_names for {name, _} <- @commands, do: name
+
+  def register_commands() do
+    commands = for {name, command} <- @commands, do: command.spec(name)
+
+    # Global application commands take a couple of minutes to update in Discord,
+    # so we use a test guild when in dev mode.
+    if Application.get_env(:bastes_bot, :env) == :dev do
+      guild_id = Application.get_env(:bastes_bot, :dev_guild_id)
+      Nostrum.Api.bulk_overwrite_guild_application_commands(guild_id, commands)
+    else
+      Nostrum.Api.bulk_overwrite_global_application_commands(commands)
+    end
   end
 
-  Cogs.def ping(arg) do
-    IO.puts("ping received")
-    IO.inspect(arg, labal: "arg")
-    IO.inspect(message, label: "message")
-    Cogs.say("Pong!!! #{arg}")
+  def handle_interaction(interaction) do
+    if interaction.data.name in @command_names do
+      @commands[interaction.data.name].handle_interaction(interaction)
+    else
+      :ok
+    end
   end
 end

@@ -22,7 +22,8 @@ defmodule BastesBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:alchemy, "~> 0.7.0", hex: :discord_alchemy}
+      {:dotenv_parser, "~> 2.0"},
+      {:nostrum, "~> 0.6"}
     ]
   end
 end
