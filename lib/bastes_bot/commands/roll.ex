@@ -30,8 +30,8 @@ defmodule BastesBot.Commands.Roll do
 
   @impl Command
   def handle_interaction(interaction) do
-    %{value: sides} = Command.get_option(interaction, "sides")
-    %{value: number} = Command.get_option(interaction, "number")
+    sides = get_option_with_defaults(interaction, "sides", 20)
+    number = get_option_with_defaults(interaction, "number", 1)
 
     {sum, spread} =
       Stream.repeatedly(fn -> Enum.random(0..sides) end)
@@ -42,7 +42,26 @@ defmodule BastesBot.Commands.Roll do
 
     Api.create_interaction_response(interaction, %{
       type: 4,
-      data: %{content: "Rolled a #{sum} #{inspect(spread, charlists: :as_lists)}"}
+      data: %{
+        content: "*rolled #{number}D#{sides}:*\n**#{sum}**" <> optional_spread(number, spread)
+      }
     })
+  end
+
+  defp optional_spread(number, spread) do
+    if number do
+      " " <> inspect(spread, charlists: :as_lists)
+    else
+      ""
+    end
+  end
+
+  defp get_option_with_defaults(interaction, option, default) do
+    with %{value: value} <- Command.get_option(interaction, option) do
+      value
+    else
+      _ ->
+        default
+    end
   end
 end
